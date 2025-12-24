@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' 'unsafe-inline' https: data:; connect-src 'self' https:"
+    />
+    <title>Sign Up - EduConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#7c3aed",
+              "primary-dark": "#6d28d9",
+            },
+            animation: {
+              "fade-in-up": "fadeInUp 0.8s ease-out forwards",
+              "bounce-in": "bounceIn 0.6s ease-out forwards",
+            },
+            keyframes: {
+              fadeInUp: {
+                "0%": { opacity: "0", transform: "translateY(30px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              bounceIn: {
+                "0%": { opacity: "0", transform: "scale(0.3)" },
+                "50%": { opacity: "1", transform: "scale(1.05)" },
+                "100%": { opacity: "1", transform: "scale(1)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .input-focus:focus {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center px-6 py-12">
+      <div class="w-full max-w-md">
+        <div class="text-center mb-8 animate-fade-in-up">
+          <a
+            href="index.html"
+            class="inline-flex items-center gap-2 mb-6 hover:scale-105 transform transition-transform duration-300"
+          >
+            <svg
+              class="w-8 h-8 text-purple-600 animate-bounce"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              ></path>
+            </svg>
+            <span class="text-2xl font-bold text-gray-900">EduConnect</span>
+          </a>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Join EduConnect</h1>
+          <p class="text-gray-600">Create your account and start learning</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm p-8 animate-bounce-in">
+          <form id="signupForm">
+            <div class="mb-4">
+              <label
+                for="fullName"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Full Name</label
+              >
+              <input
+                type="text"
+                id="fullName"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none input-focus"
+                placeholder="John Doe"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >University Email</label
+              >
+              <input
+                type="email"
+                id="email"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none input-focus"
+                placeholder="you@university.edu"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="university"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >University</label
+              >
+              <input
+                type="text"
+                id="university"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none input-focus"
+                placeholder="Harvard University"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="country"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Country</label
+              >
+              <select
+                id="country"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none input-focus"
+              >
+                <option value="">Select your country</option>
+                <option value="United States">United States</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="India">India</option>
+                <option value="Australia">Australia</option>
+                <option value="Canada">Canada</option>
+                <option value="Netherlands">Netherlands</option>
+                <option value="Singapore">Singapore</option>
+                <option value="Kenya">Kenya</option>
+                <option value="South Africa">South Africa</option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label
+                for="classLevel"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Class/Level</label
+              >
+              <select
+                id="classLevel"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none input-focus"
+              >
+                <option value="">Select your class/level</option>
+                <option value="High School - Grade 9">High School - Grade 9</option>
+                <option value="High School - Grade 10">High School - Grade 10</option>
+                <option value="High School - Grade 11">High School - Grade 11</option>
+                <option value="High School - Grade 12">High School - Grade 12</option>
+                <option value="Undergraduate - Year 1">Undergraduate - Year 1</option>
+                <option value="Undergraduate - Year 2">Undergraduate - Year 2</option>
+                <option value="Undergraduate - Year 3">Undergraduate - Year 3</option>
+                <option value="Undergraduate - Year 4">Undergraduate - Year 4</option>
+                <option value="Graduate - Masters">Graduate - Masters</option>
+                <option value="Graduate - PhD">Graduate - PhD</option>
+                <option value="Professional Course">Professional Course</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="mb-6">
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Password</label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="password"
+                  required
+                  minlength="6"
+                  class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none input-focus"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  id="toggleBtn"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+            </div>
+
+            <div
+              id="error"
+              class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm"
+            ></div>
+
+            <button
+              type="submit"
+              id="submitBtn"
+              class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 hover:scale-105 hover:shadow-lg transform transition-all duration-300"
+            >
+              Create Account
+            </button>
+          </form>
+
+          <p class="text-center mt-6 text-gray-600">
+            Already have an account?
+            <a
+              href="login.html"
+              class="text-purple-600 font-semibold hover:text-purple-700"
+              >Sign In</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const client = window.supabase.createClient(
+        'https://uclvqmoeiybrauenbqau.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
+      )
+
+
+
+      document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        const fullName = document.getElementById('fullName').value
+        const email = document.getElementById('email').value
+        const university = document.getElementById('university').value
+        const country = document.getElementById('country').value
+        const classLevel = document.getElementById('classLevel').value
+        const password = document.getElementById('password').value
+        const submitBtn = document.getElementById('submitBtn')
+        const errorDiv = document.getElementById('error')
+
+        // Block Nigerian email domains
+        const nigerianDomains = ['.ng', 'unn.edu.ng', 'ui.edu.ng', 'abu.edu.ng', 'uniben.edu.ng', 'unilag.edu.ng', 'oau.edu.ng', 'futo.edu.ng']
+        const isNigerianEmail = nigerianDomains.some(domain => email.toLowerCase().includes(domain))
+        
+        if (isNigerianEmail) {
+          errorDiv.textContent = 'EduConnect is currently not available in Nigeria. We apologize for any inconvenience.'
+          errorDiv.classList.remove('hidden')
+          return
+        }
+
+        submitBtn.disabled = true
+        submitBtn.textContent = 'Creating account...'
+        errorDiv.classList.add('hidden')
+
+        try {
+          const { data, error } = await client.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: fullName,
+                university: university,
+                country: country,
+                class_level: classLevel
+              },
+              emailRedirectTo: window.location.origin + '/login.html'
+            },
+          })
+
+          if (error) {
+            errorDiv.textContent = error.message
+            errorDiv.classList.remove('hidden')
+            submitBtn.disabled = false
+            submitBtn.textContent = 'Create Account'
+          } else {
+            // Create profile record
+            if (data.user) {
+              const { error: profileError } = await client
+                .from('profiles')
+                .upsert({
+                  id: data.user.id,
+                  full_name: fullName,
+                  university: university,
+                  country: country,
+                  class_level: classLevel,
+                  coins: 10
+                })
+
+              if (profileError) {
+                console.error('Profile creation error:', profileError)
+              }
+            }
+
+            submitBtn.textContent = 'Check Your Email'
+            submitBtn.classList.remove('bg-purple-600')
+            submitBtn.classList.add('bg-green-600')
+            submitBtn.disabled = false
+            submitBtn.onclick = () => {
+              // Try different email opening methods
+              const emailDomain = email.split('@')[1]
+              let emailUrl = `mailto:${email}`
+
+              if (emailDomain.includes('gmail')) {
+                emailUrl = 'https://mail.google.com/mail/u/0/#inbox'
+              } else if (emailDomain.includes('outlook') || emailDomain.includes('hotmail')) {
+                emailUrl = 'https://outlook.live.com/mail/0/inbox'
+              } else if (emailDomain.includes('yahoo')) {
+                emailUrl = 'https://mail.yahoo.com/'
+              }
+
+              window.open(emailUrl, '_blank')
+            }
+            errorDiv.innerHTML = '<div class="p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">Account created! Click the button above to open your email and verify your account.</div>'
+            errorDiv.classList.remove('hidden')
+          }
+        } catch (err) {
+          errorDiv.textContent = 'An error occurred. Please try again.'
+          errorDiv.classList.remove('hidden')
+          submitBtn.disabled = false
+          submitBtn.textContent = 'Create Account'
+        }
+      })
+
+      document.getElementById('toggleBtn').addEventListener('click', function() {
+        const input = document.getElementById('password')
+        const icon = this.querySelector('svg')
+
+        if (input.type === 'password') {
+          input.type = 'text'
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>'
+        } else {
+          input.type = 'password'
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>'
+        }
+      })
+    </script>
+  </body>
+</html>

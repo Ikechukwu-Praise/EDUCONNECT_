@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - EduConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <!-- Navigation -->
+  <nav class="bg-white border-b border-gray-200">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-8">
+          <a href="dashboard.html" class="flex items-center gap-2">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            <span class="text-xl font-bold">EduConnect</span>
+          </a>
+          <div class="hidden md:flex gap-6">
+            <a href="dashboard.html" class="text-gray-600 hover:text-purple-600">Dashboard</a>
+            <a href="subjects.html" class="text-gray-600 hover:text-purple-600">Subjects</a>
+            <a href="rooms.html" class="text-gray-600 hover:text-purple-600">Study Rooms</a>
+            <a href="profile.html" class="text-gray-600 hover:text-purple-600">Profile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto px-6 py-8">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-white rounded-xl shadow-sm p-8">
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Complete Payment</h1>
+          <p class="text-gray-600">Choose your preferred payment method</p>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="bg-purple-50 rounded-lg p-6 mb-8">
+          <h3 class="font-bold text-lg mb-4">Order Summary</h3>
+          <div class="flex justify-between items-center mb-2">
+              <span id="coinAmount">20 Coins</span>
+              <span id="coinPrice">$7.00</span>
+            </div>
+          <div class="border-t pt-2 mt-2">
+            <div class="flex justify-between items-center font-bold">
+              <span>Total</span>
+              <span id="totalPrice">$7.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="space-y-4 mb-8">
+          <h3 class="font-bold text-lg">Payment Method</h3>
+          
+          <!-- Flutterwave -->
+          <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-purple-600 cursor-pointer transition" onclick="selectPayment('flutterwave', this)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Flutterwave</p>
+                  <p class="text-sm text-gray-600">Secure payment processing</p>
+                </div>
+              </div>
+              <input type="radio" name="payment" value="flutterwave" class="w-5 h-5 text-purple-600">
+            </div>
+          </div>
+
+          <!-- Credit Card -->
+          <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-purple-600 cursor-pointer transition" onclick="selectPayment('card', this)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Credit/Debit Card</p>
+                  <p class="text-sm text-gray-600">Visa, Mastercard, American Express</p>
+                </div>
+              </div>
+              <input type="radio" name="payment" value="card" class="w-5 h-5 text-purple-600">
+            </div>
+          </div>
+
+
+
+          <!-- Google Pay -->
+          <div class="border-2 border-gray-200 rounded-lg p-4 hover:border-purple-600 cursor-pointer transition" onclick="selectPayment('google', this)">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="font-semibold">Google Pay</p>
+                  <p class="text-sm text-gray-600">Pay with your Google account</p>
+                </div>
+              </div>
+              <input type="radio" name="payment" value="google" class="w-5 h-5 text-purple-600">
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-4">
+          <button onclick="goBack()" class="flex-1 px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+            Back
+          </button>
+          <button id="proceedBtn" onclick="processPayment()" class="flex-1 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition disabled:opacity-50" disabled>
+            Complete Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://uclvqmoeiybrauenbqau.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
+    const STRIPE_PUBLIC_KEY = 'pk_test_51234567890abcdef' // Replace with your Stripe publishable key
+    const stripe = Stripe(STRIPE_PUBLIC_KEY)
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+    let selectedPayment = null;
+    let orderData = {};
+
+    // Load order data from URL params
+    function loadOrderData() {
+      const params = new URLSearchParams(window.location.search);
+      orderData = {
+        coins: parseInt(params.get('coins')) || 20,
+        price: parseFloat(params.get('price')) || 7.00
+      };
+
+      document.getElementById('coinAmount').textContent = `${orderData.coins} Coins`;
+      document.getElementById('coinPrice').textContent = `$${orderData.price.toFixed(2)}`;
+      document.getElementById('totalPrice').textContent = `$${orderData.price.toFixed(2)}`;
+    }
+
+    function selectPayment(method, element) {
+      selectedPayment = method;
+
+      // Update radio buttons
+      document.querySelectorAll('input[name="payment"]').forEach(radio => {
+        radio.checked = radio.value === method;
+      });
+
+      // Update border colors
+      document.querySelectorAll('.border-2').forEach(div => {
+        div.classList.remove('border-purple-600');
+        div.classList.add('border-gray-200');
+      });
+
+      // Highlight the selected card
+      if (element) {
+        element.classList.remove('border-gray-200');
+        element.classList.add('border-purple-600');
+      }
+
+      // Enable proceed button
+      document.getElementById('proceedBtn').disabled = false;
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    async function processPayment() {
+      if (!selectedPayment) return;
+
+      const proceedBtn = document.getElementById('proceedBtn');
+      proceedBtn.disabled = true;
+      proceedBtn.textContent = 'Processing...';
+
+      try {
+        const { data: { user } } = await client.auth.getUser();
+        if (!user) throw new Error('Not authenticated');
+
+        if (selectedPayment === 'card') {
+          await processStripePayment(user);
+        } else {
+          throw new Error('Payment method not implemented yet');
+        }
+
+      } catch (error) {
+        console.error('Payment error:', error);
+        alert('Payment failed: ' + error.message);
+        proceedBtn.disabled = false;
+        proceedBtn.textContent = 'Complete Payment';
+      }
+    }
+
+    async function processStripePayment(user) {
+      // Create payment intent on your backend
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: Math.round(orderData.price * 100), // Convert to cents
+          currency: 'usd',
+          userId: user.id,
+          coins: orderData.coins
+        })
+      });
+
+      const { clientSecret } = await response.json();
+
+      // Confirm payment with Stripe
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: {
+            // This would normally be a Stripe Elements card input
+            // For now, using test card
+            number: '4242424242424242',
+            exp_month: 12,
+            exp_year: 2025,
+            cvc: '123'
+          }
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (paymentIntent.status === 'succeeded') {
+        // Update coins in database
+        await updateUserCoins(user.id, orderData.coins);
+        alert(`Payment successful! ${orderData.coins} coins added to your account.`);
+        window.location.href = 'profile.html';
+      }
+    }
+
+    async function updateUserCoins(userId, coinsToAdd) {
+      const { data: profile } = await client
+        .from('profiles')
+        .select('coins')
+        .eq('id', userId)
+        .single();
+
+      const newCoins = (profile?.coins || 0) + coinsToAdd;
+
+      await client
+        .from('profiles')
+        .update({ coins: newCoins })
+        .eq('id', userId);
+    }
+
+    // Initialize
+    loadOrderData();
+  </script>
+</body>
+</html>
