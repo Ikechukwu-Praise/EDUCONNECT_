@@ -1,0 +1,36 @@
+# Ignore Next.js files
+next.config.mjs
+tsconfig.json
+postcss.config.mjs
+pnpm-lock.yaml
+
+# Ignore React/Next.js folders
+app/
+components/ui/
+components/theme-provider.tsx
+components/app-nav.jsx
+
+# Ignore TypeScript files
+*.tsx
+hooks/use-mobile.ts
+hooks/use-toast.ts
+lib/utils.ts
+
+# Ignore development files
+.next/
+node_modules/
+.env.local
+
+# Ignore server files
+payment-server.js
+server.py
+serve.py
+proxy.js
+
+# Ignore SQL files
+*.sql
+
+# Ignore documentation
+docs/
+*.md
+!README.md
