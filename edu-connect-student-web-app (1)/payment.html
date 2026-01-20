@@ -190,11 +190,8 @@
         const { data: { user } } = await client.auth.getUser();
         if (!user) throw new Error('Not authenticated');
 
-        if (selectedPayment === 'card') {
-          await processStripePayment(user);
-        } else {
-          throw new Error('Payment method not implemented yet');
-        }
+        // Simulate payment processing for demo
+        await simulatePayment(user);
 
       } catch (error) {
         console.error('Payment error:', error);
@@ -204,45 +201,28 @@
       }
     }
 
-    async function processStripePayment(user) {
-      // Create payment intent on your backend
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: Math.round(orderData.price * 100), // Convert to cents
-          currency: 'usd',
-          userId: user.id,
-          coins: orderData.coins
-        })
+    async function simulatePayment(user) {
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Update coins in database
+      await updateUserCoins(user.id, orderData.coins);
+      
+      // Record transaction
+      await recordTransaction(user.id, orderData.coins, orderData.price);
+      
+      alert(`Payment successful! ${orderData.coins} coins added to your account.`);
+      window.location.href = 'profile.html';
+    }
+
+    async function recordTransaction(userId, coins, amount) {
+      await client.from('coin_transactions').insert({
+        user_id: userId,
+        coins_purchased: coins,
+        amount_paid: amount,
+        payment_method: selectedPayment,
+        status: 'completed'
       });
-
-      const { clientSecret } = await response.json();
-
-      // Confirm payment with Stripe
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: {
-            // This would normally be a Stripe Elements card input
-            // For now, using test card
-            number: '4242424242424242',
-            exp_month: 12,
-            exp_year: 2025,
-            cvc: '123'
-          }
-        }
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (paymentIntent.status === 'succeeded') {
-        // Update coins in database
-        await updateUserCoins(user.id, orderData.coins);
-        alert(`Payment successful! ${orderData.coins} coins added to your account.`);
-        window.location.href = 'profile.html';
-      }
     }
 
     async function updateUserCoins(userId, coinsToAdd) {

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - EduConnect</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com" defer></script>
   <script>
     tailwind.config = {
       theme: {
@@ -35,7 +35,7 @@
   <style>
     .input-focus:focus { transform: scale(1.02); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gray-50">
@@ -110,7 +110,14 @@
   <script>
     const client = window.supabase.createClient(
       'https://uclvqmoeiybrauenbqau.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto',
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
     )
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -125,19 +132,27 @@
       submitBtn.textContent = 'Signing in...'
       errorDiv.classList.add('hidden')
 
-      const { data, error } = await client.auth.signInWithPassword({
-        email,
-        password,
-      })
+      try {
+        const { data, error } = await client.auth.signInWithPassword({
+          email,
+          password,
+        })
 
-      if (error) {
-        errorDiv.textContent = error.message
+        if (error) {
+          console.log('Supabase error:', error)
+          errorDiv.textContent = error.message
+          errorDiv.classList.remove('hidden')
+        } else {
+          window.location.href = 'dashboard.html'
+        }
+      } catch (err) {
+        console.log('Network error:', err)
+        errorDiv.textContent = 'Network connection failed. Check your internet connection.'
         errorDiv.classList.remove('hidden')
-        submitBtn.disabled = false
-        submitBtn.textContent = 'Sign In'
-      } else {
-        window.location.href = 'dashboard.html'
       }
+      
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Sign In'
     })
 
     document.getElementById('toggleBtn').addEventListener('click', function() {

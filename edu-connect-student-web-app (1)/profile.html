@@ -163,9 +163,15 @@
           <div class="bg-white rounded-2xl shadow-xl p-8">
             <div class="flex justify-between items-center mb-6">
               <h3 class="text-xl font-bold text-gray-900">Friends</h3>
-              <button id="addFriendBtn" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                + Add Friend
-              </button>
+              <div class="flex gap-2">
+                <button id="friendRequestsBtn" class="bg-orange-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-orange-600 transition relative">
+                  <span id="requestCount" class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                  Requests
+                </button>
+                <button id="addFriendBtn" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                  + Add Friend
+                </button>
+              </div>
             </div>
             <div id="friendsList" class="space-y-3">
               <p class="text-gray-500 italic text-center py-4">No friends yet</p>
@@ -220,7 +226,43 @@
     </div>
   </div>
 
-  <!-- Edit Profile Modal -->
+  <!-- Friend Requests Modal -->
+  <div id="friendRequestsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 z-50">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Friend Requests</h2>
+        <button id="closeFriendRequests" class="text-gray-500 hover:text-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="pendingRequests" class="space-y-4">
+        <p class="text-gray-500 italic text-center py-4">No pending requests</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Friend Modal -->
+  <div id="addFriendModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 z-50">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full">
+      <h2 class="text-2xl font-bold mb-6">Add Friend</h2>
+      <form id="addFriendForm">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Friend's Email</label>
+          <input type="email" id="friendEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" placeholder="friend@example.com">
+        </div>
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Message (Optional)</label>
+          <textarea id="friendMessage" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" placeholder="Hi! Let's connect on EduConnect..."></textarea>
+        </div>
+        <div class="flex gap-4">
+          <button type="button" id="cancelAddFriend" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+          <button type="submit" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Send Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
   <div id="editProfileModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center px-4 z-50">
     <div class="bg-white rounded-xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
       <h2 class="text-2xl font-bold mb-6">Edit Profile</h2>
@@ -664,17 +706,29 @@
 
     // Add Friend Modal
     document.getElementById('addFriendBtn').addEventListener('click', () => {
-      const email = prompt('Enter friend\'s email:')
-      if (email) addFriend(email)
+      document.getElementById('addFriendModal').classList.remove('hidden')
     })
 
-    async function addFriend(email) {
+    document.getElementById('cancelAddFriend').addEventListener('click', () => {
+      document.getElementById('addFriendModal').classList.add('hidden')
+    })
+
+    document.getElementById('addFriendForm').addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const email = document.getElementById('friendEmail').value
+      const message = document.getElementById('friendMessage').value
+      await addFriend(email, message)
+      document.getElementById('addFriendModal').classList.add('hidden')
+      document.getElementById('addFriendForm').reset()
+    })
+
+    async function addFriend(email, message = '') {
       const user = await checkAuth()
       
-      // Find user by email in profiles table
+      // Find user by email
       const { data: friendProfile } = await supabaseClient
         .from('profiles')
-        .select('id')
+        .select('id, full_name')
         .eq('email', email)
         .single()
       
@@ -683,17 +737,110 @@
         return
       }
       
+      if (friendProfile.id === user.id) {
+        showToast('You cannot add yourself as a friend', 'error')
+        return
+      }
+      
+      // Check if friendship already exists
+      const { data: existing } = await supabaseClient
+        .from('friendships')
+        .select('*')
+        .or(`and(requester_id.eq.${user.id},addressee_id.eq.${friendProfile.id}),and(requester_id.eq.${friendProfile.id},addressee_id.eq.${user.id})`)
+        .single()
+      
+      if (existing) {
+        showToast('Friend request already exists or you are already friends', 'error')
+        return
+      }
+      
       const { error } = await supabaseClient
         .from('friendships')
         .insert({
           requester_id: user.id,
-          addressee_id: friendProfile.id
+          addressee_id: friendProfile.id,
+          status: 'pending',
+          message: message
         })
       
       if (error) {
         showToast('Error sending friend request', 'error')
       } else {
-        showToast('Friend request sent!')
+        showToast(`Friend request sent to ${friendProfile.full_name}!`)
+      }
+    }
+
+    // Friend Requests Modal
+    document.getElementById('friendRequestsBtn').addEventListener('click', () => {
+      document.getElementById('friendRequestsModal').classList.remove('hidden')
+      loadFriendRequests()
+    })
+
+    document.getElementById('closeFriendRequests').addEventListener('click', () => {
+      document.getElementById('friendRequestsModal').classList.add('hidden')
+    })
+
+    async function loadFriendRequests() {
+      const user = await checkAuth()
+      const { data: requests } = await supabaseClient
+        .from('friendships')
+        .select(`
+          *,
+          requester:profiles!friendships_requester_id_fkey(full_name, profile_photo_url)
+        `)
+        .eq('addressee_id', user.id)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+      
+      const container = document.getElementById('pendingRequests')
+      const countBadge = document.getElementById('requestCount')
+      
+      if (requests && requests.length > 0) {
+        countBadge.textContent = requests.length
+        countBadge.classList.remove('hidden')
+        
+        container.innerHTML = requests.map(req => `
+          <div class="border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                ${req.requester.profile_photo_url ? 
+                  `<img src="${req.requester.profile_photo_url}" class="w-10 h-10 rounded-full object-cover">` :
+                  `<span class="text-sm font-bold text-purple-600">${req.requester.full_name[0]}</span>`
+                }
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold">${req.requester.full_name}</p>
+                <p class="text-sm text-gray-500">wants to be your friend</p>
+              </div>
+            </div>
+            ${req.message ? `<p class="text-sm text-gray-600 mb-3 italic">"${req.message}"</p>` : ''}
+            <div class="flex gap-2">
+              <button onclick="respondToRequest('${req.id}', 'accepted')" class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg text-sm hover:bg-green-700">
+                Accept
+              </button>
+              <button onclick="respondToRequest('${req.id}', 'rejected')" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg text-sm hover:bg-red-700">
+                Decline
+              </button>
+            </div>
+          </div>
+        `).join('')
+      } else {
+        countBadge.classList.add('hidden')
+        container.innerHTML = '<p class="text-gray-500 italic text-center py-4">No pending requests</p>'
+      }
+    }
+
+    async function respondToRequest(requestId, status) {
+      const { error } = await supabaseClient
+        .from('friendships')
+        .update({ status })
+        .eq('id', requestId)
+      
+      if (error) {
+        showToast('Error responding to request', 'error')
+      } else {
+        showToast(status === 'accepted' ? 'Friend request accepted!' : 'Friend request declined')
+        loadFriendRequests()
         loadFriends()
       }
     }
@@ -704,23 +851,57 @@
         .from('friendships')
         .select(`
           *,
-          requester:profiles!friendships_requester_id_fkey(full_name),
-          addressee:profiles!friendships_addressee_id_fkey(full_name)
+          requester:profiles!friendships_requester_id_fkey(full_name, profile_photo_url),
+          addressee:profiles!friendships_addressee_id_fkey(full_name, profile_photo_url)
         `)
         .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
         .eq('status', 'accepted')
+        .order('created_at', { ascending: false })
       
       const container = document.getElementById('friendsList')
       if (friends && friends.length > 0) {
         container.innerHTML = friends.map(f => {
-          const friendName = f.requester_id === user.id ? f.addressee.full_name : f.requester.full_name
-          return `<div class="flex items-center gap-2 p-2 bg-gray-50 rounded">
-            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-              <span class="text-sm font-bold text-purple-600">${friendName[0]}</span>
+          const friend = f.requester_id === user.id ? f.addressee : f.requester
+          return `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                  ${friend.profile_photo_url ? 
+                    `<img src="${friend.profile_photo_url}" class="w-10 h-10 rounded-full object-cover">` :
+                    `<span class="text-sm font-bold text-purple-600">${friend.full_name[0]}</span>`
+                  }
+                </div>
+                <div>
+                  <p class="font-semibold text-sm">${friend.full_name}</p>
+                  <p class="text-xs text-gray-500">Friend since ${new Date(f.updated_at || f.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+              <button onclick="removeFriend('${f.id}')" class="text-red-500 hover:text-red-700 text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
             </div>
-            <span class="text-sm">${friendName}</span>
-          </div>`
+          `
         }).join('')
+      } else {
+        container.innerHTML = '<p class="text-gray-500 italic text-center py-4">No friends yet</p>'
+      }
+    }
+
+    async function removeFriend(friendshipId) {
+      if (!confirm('Are you sure you want to remove this friend?')) return
+      
+      const { error } = await supabaseClient
+        .from('friendships')
+        .delete()
+        .eq('id', friendshipId)
+      
+      if (error) {
+        showToast('Error removing friend', 'error')
+      } else {
+        showToast('Friend removed')
+        loadFriends()
       }
     }
 
@@ -745,9 +926,12 @@
 
     // Make functions available globally
     window.buyCoins = buyCoins
+    window.respondToRequest = respondToRequest
+    window.removeFriend = removeFriend
 
     loadProfile().then(() => {
       loadFriends()
+      loadFriendRequests()
       loadAchievements()
     })
   </script>
