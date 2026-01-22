@@ -4,8 +4,9 @@
   "description": "Student Learning Platform - Connect, Share, Learn Together",
   "main": "index.html",
   "scripts": {
-    "start": "serve .",
-    "build": "echo 'Static site - no build needed'"
+    "start": "node server.js",
+    "build": "echo 'Static site - no build needed'",
+    "dev": "node server.js"
   },
   "keywords": ["education", "learning", "students", "collaboration"],
   "author": "Ikechukwu Praise",
