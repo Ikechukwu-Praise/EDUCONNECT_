@@ -318,22 +318,28 @@
             submitBtn.classList.remove('bg-purple-600')
             submitBtn.classList.add('bg-green-600')
             submitBtn.disabled = false
+            
+            // Get email domain and open appropriate email service
+            const emailDomain = email.split('@')[1]
+            let emailUrl = `mailto:${email}`
+
+            if (emailDomain.includes('gmail')) {
+              emailUrl = 'https://mail.google.com/mail/u/0/#inbox'
+            } else if (emailDomain.includes('outlook') || emailDomain.includes('hotmail')) {
+              emailUrl = 'https://outlook.live.com/mail/0/inbox'
+            } else if (emailDomain.includes('yahoo')) {
+              emailUrl = 'https://mail.yahoo.com/'
+            }
+
+            // Open email immediately
+            window.open(emailUrl, '_blank')
+            
+            // Also set up button for manual retry
             submitBtn.onclick = () => {
-              // Try different email opening methods
-              const emailDomain = email.split('@')[1]
-              let emailUrl = `mailto:${email}`
-
-              if (emailDomain.includes('gmail')) {
-                emailUrl = 'https://mail.google.com/mail/u/0/#inbox'
-              } else if (emailDomain.includes('outlook') || emailDomain.includes('hotmail')) {
-                emailUrl = 'https://outlook.live.com/mail/0/inbox'
-              } else if (emailDomain.includes('yahoo')) {
-                emailUrl = 'https://mail.yahoo.com/'
-              }
-
               window.open(emailUrl, '_blank')
             }
-            errorDiv.innerHTML = '<div class="p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">Account created! Click the button above to open your email and verify your account.</div>'
+            
+            errorDiv.innerHTML = '<div class="p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">✅ Account created! Your email has opened in a new tab. Check for a confirmation email and click the link to verify your account.<br><br>If no email appears, check your Spam/Junk folder. You can click the button above to open your email again.</div>'
             errorDiv.classList.remove('hidden')
           }
         } catch (err) {
