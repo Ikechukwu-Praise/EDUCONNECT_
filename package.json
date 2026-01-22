@@ -1,0 +1,16 @@
+{
+  "name": "educonnect",
+  "version": "1.0.0",
+  "description": "Student Learning Platform - Connect, Share, Learn Together",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve .",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": ["education", "learning", "students", "collaboration"],
+  "author": "Ikechukwu Praise",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}

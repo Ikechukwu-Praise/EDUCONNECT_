@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.local
+.env.production
+.env.development
+*.log
+.DS_Store
+.vercel
+dist/
+build/
+.cache/
+coverage/
+*.tgz
+*.tar.gz

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buy Coins - EduConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50">
+  <div id="app"></div>
+
+  <main class="container mx-auto px-6 py-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">Choose Your Coin Package</h1>
+        <p class="text-gray-600">Select the perfect plan for your learning needs</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <!-- Starter Pack -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-gray-200 hover:border-purple-500 transition-all duration-300 hover:shadow-2xl">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter Pack</h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-purple-600">20</span>
+              <span class="text-gray-600 ml-2">Coins</span>
+            </div>
+            <div class="text-3xl font-bold text-gray-900 mb-6">$7.00</div>
+            <ul class="text-left space-y-2 mb-6 text-gray-600">
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                20 Chapter Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                10 Practice Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                4 Exam Packs
+              </li>
+            </ul>
+            <button onclick="selectPlan(20, 7.00)" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+              Choose Starter
+            </button>
+          </div>
+        </div>
+
+        <!-- Popular Pack -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-purple-500 hover:border-purple-600 transition-all duration-300 hover:shadow-2xl relative">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <span class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+          </div>
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Popular Pack</h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-purple-600">50</span>
+              <span class="text-gray-600 ml-2">Coins</span>
+            </div>
+            <div class="text-3xl font-bold text-gray-900 mb-6">$17.00</div>
+            <ul class="text-left space-y-2 mb-6 text-gray-600">
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                50 Chapter Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                25 Practice Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                10 Exam Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                5 Premium Bundles
+              </li>
+            </ul>
+            <button onclick="selectPlan(50, 17.00)" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+              Choose Popular
+            </button>
+          </div>
+        </div>
+
+        <!-- Premium Pack -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-gray-200 hover:border-yellow-500 transition-all duration-300 hover:shadow-2xl">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm2.7-2h8.6l.9-5.4-2.1 1.4L12 8l-3.1 2L6.8 8.6L7.7 14z"/>
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium Pack</h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-yellow-600">100</span>
+              <span class="text-gray-600 ml-2">Coins</span>
+            </div>
+            <div class="text-3xl font-bold text-gray-900 mb-6">$33.00</div>
+            <ul class="text-left space-y-2 mb-6 text-gray-600">
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                100 Chapter Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                50 Practice Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                20 Exam Packs
+              </li>
+              <li class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                10 Premium Bundles
+              </li>
+            </ul>
+            <button onclick="selectPlan(100, 33.00)" class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+              Choose Premium
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <p class="text-gray-600 mb-4">All purchases are secure and processed through Stripe</p>
+        <button onclick="goBack()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+          Back to Profile
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://uclvqmoeiybrauenbqau.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+    async function checkAuth() {
+      const { data: { user } } = await client.auth.getUser()
+      if (!user) {
+        window.location.href = 'login.html'
+      }
+      return user
+    }
+
+    async function getUserProfile(userId) {
+      const { data } = await client
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+      return data
+    }
+
+    async function loadNav() {
+      const user = await checkAuth()
+      if (!user) return
+
+      const profile = await getUserProfile(user.id)
+
+      const nav = `
+        <nav class="bg-white border-b border-gray-200">
+          <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-8">
+                <a href="dashboard.html" class="flex items-center gap-2">
+                  <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  </svg>
+                  <span class="text-xl font-bold">EduConnect</span>
+                </a>
+                <div class="hidden md:flex gap-6">
+                  <a href="dashboard.html" class="text-gray-600 hover:text-purple-600">Dashboard</a>
+                  <a href="subjects.html" class="text-gray-600 hover:text-purple-600">Subjects</a>
+                  <a href="rooms.html" class="text-gray-600 hover:text-purple-600">Study Rooms</a>
+                  <a href="profile.html" class="text-gray-600 hover:text-purple-600">Profile</a>
+                </div>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-lg">
+                  <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span class="font-semibold text-purple-600">${profile?.coins || 0}</span>
+                </div>
+                <button onclick="logout()" class="text-gray-600 hover:text-red-600">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+      `
+
+      document.getElementById('app').innerHTML = nav
+    }
+
+    function selectPlan(coins, price) {
+      window.location.href = `payment.html?coins=${coins}&price=${price}`
+    }
+
+    function goBack() {
+      window.location.href = 'profile.html'
+    }
+
+    async function logout() {
+      await client.auth.signOut()
+      window.location.href = 'index.html'
+    }
+
+    loadNav()
+  </script>
+</body>
+</html>
