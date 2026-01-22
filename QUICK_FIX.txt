@@ -1,0 +1,70 @@
+# QUICK FIX - DO THIS NOW
+
+## The Problem
+When users try to sign up, the login fails with a "database error adding new user" message.
+
+## Root Cause
+The database table `profiles` is missing columns that the signup form tries to insert into:
+- `university` ❌ Missing
+- `email` ❌ Missing  
+- `country` ❌ Missing
+- `class_level` ❌ Missing
+
+Also, there's no automatic trigger to create user profiles when new users register.
+
+## The Solution (3 Simple Steps)
+
+### Step 1: Run the Fix SQL Script
+1. Go to: https://app.supabase.com
+2. Click your project name
+3. Click "SQL Editor" in left sidebar
+4. Click "+ New Query" button
+5. Copy everything from the file: `FIX_DEPLOYMENT_ERRORS.sql`
+6. Paste it into the SQL editor
+7. Click the "Run" button (blue play icon)
+8. Wait for "Query executed successfully" message
+
+### Step 2: Test the Signup
+1. Open your app to the signup page
+2. Fill in all fields:
+   - Full Name: Any name
+   - Email: Any email
+   - University: Any university
+   - Country: Select from dropdown
+   - Class Level: Select from dropdown
+   - Password: Min 6 characters
+3. Click "Create Account"
+
+### Step 3: Verify Success
+✅ You should see: "Account created! Click the button above to open your email and verify your account."
+✅ You receive a verification email
+✅ You can click the link and login
+✅ Your profile appears in the dashboard
+
+## If Still Not Working
+
+**Check this:**
+```
+Go to Supabase → SQL Editor → Run this:
+SELECT COUNT(*) FROM public.profiles;
+```
+Should return a number > 0 if users exist.
+
+**Check error in console:**
+- Press F12 in browser
+- Go to Console tab
+- Try signup again
+- Look for red error messages
+
+**Common Issues:**
+- Wrong Supabase credentials in HTML file → Check config
+- Database not connected → Check Supabase project is active
+- RLS policies blocking → Already fixed by script
+- Missing columns → Already fixed by script
+
+## Files You Need to Use
+
+1. **FIX_DEPLOYMENT_ERRORS.sql** - Copy and run this in Supabase
+2. Everything else should work automatically
+
+That's it! No code changes needed after running the SQL.

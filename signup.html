@@ -289,21 +289,28 @@
             submitBtn.disabled = false
             submitBtn.textContent = 'Create Account'
           } else {
-            // Create profile record
+            // Create profile record - let the database trigger handle it primarily
             if (data.user) {
-              const { error: profileError } = await client
-                .from('profiles')
-                .upsert({
-                  id: data.user.id,
-                  full_name: fullName,
-                  university: university,
-                  country: country,
-                  class_level: classLevel,
-                  coins: 10
-                })
+              try {
+                const { error: profileError } = await client
+                  .from('profiles')
+                  .upsert({
+                    id: data.user.id,
+                    full_name: fullName,
+                    university: university,
+                    country: country,
+                    class_level: classLevel,
+                    coins: 10
+                  }, { onConflict: 'id' })
 
-              if (profileError) {
-                console.error('Profile creation error:', profileError)
+                if (profileError) {
+                  console.error('Profile creation error:', profileError)
+                  // Don't fail signup if profile creation fails - trigger should handle it
+                  console.log('Note: Database trigger will create/update profile automatically')
+                }
+              } catch (profileErr) {
+                console.error('Profile creation exception:', profileErr)
+                // Still allow signup to complete
               }
             }
 
