@@ -40,14 +40,56 @@
       .animation-delay-100 {
         animation-delay: 0.1s;
       }
+      
+      /* Watermark overlay */
+      .hero-watermark {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .hero-watermark::before {
+        content: "EduConnect";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-25deg);
+        font-size: clamp(8rem, 25vw, 20rem);
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.08);
+        white-space: nowrap;
+        pointer-events: none;
+        letter-spacing: 2px;
+        z-index: 0;
+      }
+      
+      .hero-content {
+        position: relative;
+        z-index: 1;
+      }
+      
+      /* Enhanced gradient background */
+      .hero-gradient {
+        background: linear-gradient(135deg, 
+          #7c3aed 0%, 
+          #6d28d9 20%,
+          #3b82f6 50%, 
+          #0ea5e9 75%,
+          #7c3aed 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+      
+      @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
     </style>
   </head>
   <body class="bg-gray-50">
     <!-- Hero Section -->
-    <div
-      class="min-h-screen bg-gradient-to-br from-purple-600 via-blue-600 to-purple-700"
-    >
-      <nav class="container mx-auto px-4 py-4">
+    <div class="hero-watermark hero-gradient min-h-screen">
+      <nav class="container mx-auto px-4 py-4 relative z-10">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <svg
@@ -80,7 +122,7 @@
         </div>
       </nav>
 
-      <div class="container mx-auto px-4 py-12 sm:py-20">
+      <div class="container mx-auto px-4 py-12 sm:py-20 relative z-10 hero-content">
         <div class="max-w-4xl mx-auto text-center">
           <h1
             class="text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight animate-fade-in-up"
