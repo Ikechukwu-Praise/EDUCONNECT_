@@ -149,8 +149,18 @@
     }
 
     async function logout() {
-      await supabaseClient.auth.signOut()
-      window.location.href = 'index.html'
+      try {
+        const { error } = await supabaseClient.auth.signOut()
+        if (error) console.error('Logout error:', error)
+        localStorage.clear()
+        sessionStorage.clear()
+        setTimeout(() => {
+          window.location.href = 'index.html'
+        }, 500)
+      } catch (err) {
+        console.error('Logout failed:', err)
+        window.location.href = 'index.html'
+      }
     }
 
     // Study Rooms Logic
