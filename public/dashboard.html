@@ -17,7 +17,7 @@
       }
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gray-50">
@@ -205,24 +205,36 @@
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
       try {
+        console.log('Logout clicked')
         const { error } = await supabaseClient.auth.signOut()
         if (error) {
           console.error('Logout error:', error)
+          alert('Error logging out: ' + error.message)
+          return
         }
+        console.log('Signed out successfully')
         // Clear local storage
         localStorage.clear()
         sessionStorage.clear()
         // Redirect after logout
-        setTimeout(() => {
-          window.location.href = 'index.html'
-        }, 500)
+        window.location.href = 'index.html'
       } catch (err) {
         console.error('Logout failed:', err)
-        window.location.href = 'index.html'
+        alert('Logout failed: ' + err.message)
       }
     })
 
-    loadDashboard()
+    // Load dashboard
+    async function init() {
+      await loadDashboard()
+    }
+
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init)
+    } else {
+      init()
+    }
   </script>
 </body>
 </html>
