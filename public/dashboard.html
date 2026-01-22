@@ -203,38 +203,39 @@
       document.getElementById('roomCount').textContent = rooms?.length || 0
     }
 
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      try {
-        console.log('Logout clicked')
-        const { error } = await supabaseClient.auth.signOut()
-        if (error) {
-          console.error('Logout error:', error)
-          alert('Error logging out: ' + error.message)
-          return
-        }
-        console.log('Signed out successfully')
-        // Clear local storage
-        localStorage.clear()
-        sessionStorage.clear()
-        // Redirect after logout
-        window.location.href = 'index.html'
-      } catch (err) {
-        console.error('Logout failed:', err)
-        alert('Logout failed: ' + err.message)
-      }
-    })
-
     // Load dashboard
     async function init() {
+      // Attach logout listener
+      const logoutBtn = document.getElementById('logoutBtn')
+      if (logoutBtn) {
+        logoutBtn.onclick = async (e) => {
+          e.preventDefault()
+          try {
+            console.log('Logout clicked')
+            const { error } = await supabaseClient.auth.signOut()
+            if (error) {
+              console.error('Logout error:', error)
+              alert('Error logging out: ' + error.message)
+              return
+            }
+            console.log('Signed out successfully')
+            // Clear storage
+            localStorage.clear()
+            sessionStorage.clear()
+            // Redirect
+            window.location.href = 'index.html'
+          } catch (err) {
+            console.error('Logout failed:', err)
+            alert('Logout failed: ' + err.message)
+          }
+        }
+      }
+      
       await loadDashboard()
     }
 
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init)
-    } else {
-      init()
-    }
+    // Wait for DOM and Supabase to load
+    window.addEventListener('load', init)
   </script>
 </body>
 </html>
