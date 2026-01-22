@@ -48,18 +48,27 @@
       }
       
       .hero-watermark::before {
-        content: "EduConnect";
+        content: "";
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%) rotate(-25deg);
-        font-size: clamp(8rem, 25vw, 20rem);
-        font-weight: 900;
-        color: rgba(255, 255, 255, 0.08);
-        white-space: nowrap;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background-image: url('edu.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        opacity: 0.12;
         pointer-events: none;
-        letter-spacing: 2px;
         z-index: 0;
+      }
+      
+      @media (max-width: 768px) {
+        .hero-watermark::before {
+          width: 350px;
+          height: 350px;
+        }
       }
       
       .hero-content {
