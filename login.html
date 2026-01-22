@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - EduConnect</title>
-  <script src="https://cdn.tailwindcss.com" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -35,7 +35,7 @@
   <style>
     .input-focus:focus { transform: scale(1.02); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gray-50">
@@ -108,19 +108,20 @@
   </div>
 
   <script>
-    const client = window.supabase.createClient(
-      'https://uclvqmoeiybrauenbqau.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto',
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
+    document.addEventListener('DOMContentLoaded', function() {
+      const client = window.supabase.createClient(
+        'https://uclvqmoeiybrauenbqau.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto',
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
         }
-      }
-    )
+      )
 
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault()
 
       const email = document.getElementById('email').value
@@ -200,6 +201,7 @@
       
       resendBtn.textContent = 'Resend confirmation email'
       resendBtn.disabled = false
+    })
     })
   </script>
 </body>

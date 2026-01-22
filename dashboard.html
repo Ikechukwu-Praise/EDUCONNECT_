@@ -18,7 +18,6 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="config.js"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gray-50">
@@ -136,40 +135,28 @@
   </main>
 
   <script>
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://uclvqmoeiybrauenbqau.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
+    const supabaseClient = window.supabase.createClient(
+      'https://uclvqmoeiybrauenbqau.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto',
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
       }
-    })
+    )
 
-    // Optimized auth check with caching
-    let authCache = null;
-    let authCacheTime = 0;
-    
     async function checkAuth() {
-      const now = Date.now();
-      if (authCache && (now - authCacheTime) < 30000) { // 30 second cache
-        return authCache;
-      }
-      
       const { data: { user } } = await supabaseClient.auth.getUser()
       if (!user) {
         window.location.href = 'login.html'
         return null;
       }
-      
-      authCache = user;
-      authCacheTime = now;
       return user;
     }
 
     async function getUserProfile(userId) {
-      console.log('Loading profile for user:', userId)
       const { data, error } = await supabaseClient
         .from('profiles')
         .select('*')
@@ -180,22 +167,17 @@
         console.error('Error fetching profile:', error)
         return null
       }
-      console.log('Profile data:', data)
       return data
     }
 
-    // Dashboard Logic
     async function loadDashboard() {
       const user = await checkAuth()
       if (!user) return
 
-      console.log('Current user:', user)
       const profile = await getUserProfile(user.id)
-      console.log('Loaded profile:', profile)
 
       // Update user info
       const userName = profile?.full_name || 'Student'
-      console.log('Setting userName to:', userName)
       document.getElementById('userName').textContent = userName
       document.getElementById('coinBalance').textContent = profile?.coins || 0
       document.getElementById('dashboardCoins').textContent = profile?.coins || 0
