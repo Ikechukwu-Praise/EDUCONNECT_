@@ -1,3 +1,6 @@
+# Ignore subfolder that might cause deployment issues
+edu-connect-student-web-app (1)/
+
 # Ignore Next.js files
 next.config.mjs
 tsconfig.json
