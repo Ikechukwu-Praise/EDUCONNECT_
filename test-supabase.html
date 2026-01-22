@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supabase Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Supabase Connection Test</h1>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="result"></div>
+
+    <script>
+        const client = window.supabase.createClient(
+            'https://uclvqmoeiybrauenbqau.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
+        )
+
+        async function testConnection() {
+            try {
+                const { data, error } = await client.from('profiles').select('count').limit(1)
+                document.getElementById('result').innerHTML = error ? 
+                    `Error: ${error.message}` : 
+                    'Connection successful!'
+            } catch (err) {
+                document.getElementById('result').innerHTML = `Network error: ${err.message}`
+            }
+        }
+    </script>
+</body>
+</html>

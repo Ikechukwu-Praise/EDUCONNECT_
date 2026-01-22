@@ -1,0 +1,14 @@
+Your GitHub repository: https://github.com/Ikechukwu-Praise/EDUCONNECT_
+
+To deploy to Vercel:
+1. Go to vercel.com
+2. Sign in with GitHub
+3. Click "New Project"
+4. Find "EDUCONNECT_" repository
+5. Click "Import"
+6. Click "Deploy"
+
+Your URL will be something like:
+https://educonnect-[random-string].vercel.app
+
+Once deployed, use that URL in Supabase settings.

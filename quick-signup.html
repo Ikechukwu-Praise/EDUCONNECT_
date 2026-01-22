@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Signup - EduConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+  <div class="bg-white p-8 rounded-xl shadow-sm max-w-md w-full">
+    <h1 class="text-2xl font-bold mb-6 text-center">Quick Test Account</h1>
+    
+    <div id="message" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+    
+    <button onclick="createTestAccount()" class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+      Create Test Account & Login
+    </button>
+    
+    <p class="text-center mt-4 text-gray-600">
+      This will create: test@example.com / password123
+    </p>
+  </div>
+
+  <script>
+    const client = window.supabase.createClient(
+      'https://uclvqmoeiybrauenbqau.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVjbHZxbW9laXlicmF1ZW5icWF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU5ODgxMTYsImV4cCI6MjA4MTU2NDExNn0.cKYUsuLMSb980-x-_Zrb39x10ptSf-U7AzBA6pSIuto'
+    )
+
+    async function createTestAccount() {
+      const messageDiv = document.getElementById('message')
+      
+      try {
+        // Try to sign up
+        const { data, error } = await client.auth.signUp({
+          email: 'test@example.com',
+          password: 'password123'
+        })
+
+        if (error) {
+          if (error.message.includes('already registered')) {
+            // Account exists, try to login
+            const { data: loginData, error: loginError } = await client.auth.signInWithPassword({
+              email: 'test@example.com',
+              password: 'password123'
+            })
+            
+            if (loginError) {
+              showMessage('Login failed: ' + loginError.message, 'error')
+            } else {
+              showMessage('Login successful! Redirecting...', 'success')
+              setTimeout(() => window.location.href = 'dashboard.html', 1000)
+            }
+          } else {
+            showMessage('Signup failed: ' + error.message, 'error')
+          }
+        } else {
+          showMessage('Account created! Redirecting...', 'success')
+          setTimeout(() => window.location.href = 'dashboard.html', 1000)
+        }
+      } catch (err) {
+        showMessage('Network error: ' + err.message, 'error')
+      }
+    }
+
+    function showMessage(text, type) {
+      const messageDiv = document.getElementById('message')
+      messageDiv.textContent = text
+      messageDiv.className = `mb-4 p-3 rounded-lg text-sm ${
+        type === 'error' ? 'bg-red-50 border border-red-200 text-red-700' : 
+        'bg-green-50 border border-green-200 text-green-700'
+      }`
+      messageDiv.classList.remove('hidden')
+    }
+  </script>
+</body>
+</html>
